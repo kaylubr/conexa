@@ -14,6 +14,8 @@ mongoose.connect(MONGODB_URI)
 
 app.use(express.json())
 app.use('/api/login', loginRouter)
+app.use(middleware.extractToken)
+app.use(middleware.extractUser)
 app.use('/api/plans', planRouter)
 app.use('/api/users', userRouter)
 app.use(middleware.unknownEndpoint)

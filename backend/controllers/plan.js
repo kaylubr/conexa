@@ -1,7 +1,7 @@
 const planRouter = require('express').Router()
 const Plan = require('../models/Plan')
 
-planRouter.get('/', async (_, response, next) => {
+planRouter.get('/', async (request, response, next) => {
   try {
     const plans = await Plan.find()
     response.json(plans)
