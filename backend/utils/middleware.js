@@ -4,7 +4,10 @@ const unknownEndpoint = (request, response) => {
 
 const errorHandler = (err, request, response, next) => {
   console.log(err.message)
-  console.log(err.name)
+
+  if (err.name === 'MongoServerError' && err.message.includes('E11000 duplicate key')) {
+    response.status(400).json({ message: 'Username already exists' })
+  }
 
   next(err)
 }
