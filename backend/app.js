@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const middleware = require('./utils/middleware.js')
 const planRouter = require('./controllers/plan')
 const userRouter = require('./controllers/user')
 const loginRouter = require('./controllers/login')
@@ -15,5 +16,6 @@ app.use(express.json())
 app.use('/api/login', loginRouter)
 app.use('/api/plans', planRouter)
 app.use('/api/users', userRouter)
+app.use(middleware.unknownEndpoint)
 
 module.exports = app
