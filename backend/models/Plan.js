@@ -8,7 +8,15 @@ const planSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   }
-}, { timestamp: true })
+}, { timestamps: true })
+
+planSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    ret.id = ret._id
+    delete ret._id
+    delete ret.__v
+  }
+})
 
 const Plan = mongoose.model('Plan', planSchema)
 
