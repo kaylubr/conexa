@@ -11,6 +11,15 @@ planRouter.get('/', async (request, response, next) => {
   }
 })
 
+planRouter.get('/:id', async (request, response, next) => {
+  try {
+    const plan = await Plan.findById(request.params.id).populate('user')
+    response.json(plan)
+  } catch (error) {
+    next(error)
+  }
+})
+
 planRouter.post('/', extractUser, async (request, response, next) => {
   try {
     const payload = request.body

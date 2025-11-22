@@ -31,8 +31,10 @@ const errorHandler = (err, request, response, next) => {
     response.status(401).json({ message: 'Invalid token' })
   } else if (err.name === 'TokenExpiredError') {
     return response.status(401).json({ message: 'Token has expired' })
+  } else if (err.name === 'CastError' && err.message.includes('Cast to ObjectId failed')) {
+    return response.status(404).json({ message: 'Invalid data ID' })
   }
-
+ 
   next(err)
 }
 
