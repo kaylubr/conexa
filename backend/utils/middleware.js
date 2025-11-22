@@ -28,7 +28,9 @@ const errorHandler = (err, request, response, next) => {
   if (err.name === 'MongoServerError' && err.message.includes('E11000 duplicate key')) {
     response.status(400).json({ message: 'Username already exists' })
   } else if (err.name === 'JsonWebTokenError') {
-    response.status(401).json({ message: 'Token expired or you do not have access to this' })
+    response.status(401).json({ message: 'Invalid token' })
+  } else if (err.name === 'TokenExpiredError') {
+    return response.status(401).json({ message: 'Token has expired' })
   }
 
   next(err)
