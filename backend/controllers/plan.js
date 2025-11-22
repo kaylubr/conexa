@@ -27,4 +27,31 @@ planRouter.post('/', async (request, response, next) => {
   }
 })
 
+planRouter.put('/:id', async (request, response, next) => {
+  try {
+    const { title, url, location, completed } = request.body
+
+    const newPlan = await Plan.findByIdAndUpdate(request.params.id, {
+      title, 
+      url, 
+      location, 
+      completed
+    }, { new: true })
+    await newPlan.save()
+
+    response.json(newPlan)
+  } catch (error) {
+    next(error)
+  }
+})
+
+planRouter.delete('/:id', async (request, response, next) => {
+  try {
+    await Plan.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
+
 module.exports = planRouter
