@@ -1,16 +1,17 @@
 const planRouter = require('express').Router()
+const { extractUser } = require('../utils/middleware')
 const Plan = require('../models/Plan')
 
 planRouter.get('/', async (request, response, next) => {
   try {
-    const plans = await Plan.find()
+    const plans = await Plan.find().populate('user')
     response.json(plans)
   } catch (error) {
     next(error)
   }
 })
 
-planRouter.post('/', async (request, response, next) => {
+planRouter.post('/', extractUser, async (request, response, next) => {
   try {
     const payload = request.body
 
@@ -18,16 +19,21 @@ planRouter.post('/', async (request, response, next) => {
       title: payload.title,
       url: payload.url ? payload.url : null,
       location: payload.location,
+      user: request.user
     })
 
+    const user = request.user
+    user.plans.push(newPlan)
+
     await newPlan.save()
+    await user.save()
     response.status(201).json({ message: `Successfully created ${payload.title}` })
   } catch (error) {
     next(error)
   }
 })
 
-planRouter.put('/:id', async (request, response, next) => {
+planRouter.put('/:id', extractUser, async (request, response, next) => {
   try {
     const { title, url, location, completed } = request.body
 
@@ -45,7 +51,7 @@ planRouter.put('/:id', async (request, response, next) => {
   }
 })
 
-planRouter.delete('/:id', async (request, response, next) => {
+planRouter.delete('/:id', extractUser, async (request, response, next) => {
   try {
     await Plan.findByIdAndDelete(request.params.id)
     response.status(204).end()
